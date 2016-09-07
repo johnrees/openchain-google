@@ -102,26 +102,74 @@ function storeToken(token) {
  */
 function doStuff(auth) {
   var sheets = google.sheets('v4');
-  sheets.spreadsheets.values.get({
+  sheets.spreadsheets.batchUpdate({
     auth: auth,
     spreadsheetId: '1B9sG2RjHb7AbdLNhF_KJC4nEmrfXpTnx2zifourN-z8',
-    range: 'Class Data!A2:E',
+    resource: {
+      requests: [
+        {
+          updateBorders: {
+            range: {
+              sheetId: 0,
+              startRowIndex: 0,
+              endRowIndex: 10,
+              startColumnIndex: 0,
+              endColumnIndex: 5
+            },
+            top: {
+              style: 'SOLID',
+              width: 1,
+              color: {
+                blue: 1.0
+              }
+            },
+            bottom: {
+              style: 'SOLID',
+              width: 1,
+              color: {
+                blue: 1.0
+              }
+            },
+            innerHorizontal: {
+              style: 'SOLID',
+              width: 1,
+              color: {
+                green: 1.0
+              }
+            }
+          }
+        },
+        {
+          updateSheetProperties: {
+            properties: {
+              sheetId: 0,
+              gridProperties: {
+                frozenRowCount: 2
+              }
+            },
+            fields: 'gridProperties.frozenRowCount'
+          }
+        }
+      ]
+    }
+    // range: 'Class Data!A2:E',
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
       return;
     }
-    var rows = response.values;
-    if (rows.length == 0) {
-      console.log('No data found.');
-    } else {
-      console.log('Name, Major:');
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        // Print columns A and E, which correspond to indices 0 and 4.
-        console.log('%s, %s', row[0], row[4]);
-      }
-    }
+    console.log(response);
+    // var rows = response.values;
+    // if (rows.length == 0) {
+    //   console.log('No data found.');
+    // } else {
+    //   console.log('Name, Major:');
+    //   for (var i = 0; i < rows.length; i++) {
+    //     var row = rows[i];
+    //     // Print columns A and E, which correspond to indices 0 and 4.
+    //     console.log('%s, %s', row[0], row[4]);
+    //   }
+    // }
   });
 }
 
